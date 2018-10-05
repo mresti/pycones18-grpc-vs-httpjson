@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+
+package proto;
+
+service API {
+    rpc SayHello(ServiceRequest) returns (ServiceResponse) {
+    	option (google.api.http) = {
+        	get: "/v0/api"
+    	};
+    }
+}
+
+message ServiceRequest {
+}
+
+message ServiceResponse {
+    string event = 1;
+    string detail = 2;
+    string requirements = 3;
+}

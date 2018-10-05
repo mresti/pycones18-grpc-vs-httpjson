@@ -1,0 +1,14 @@
+FROM python:3.7
+ADD . /code
+WORKDIR /code
+RUN pip install -r requirements.txt
+
+# Install grpc gateway dependencies
+RUN git clone https://github.com/googleapis/googleapis googleapis-pb --depth=1
+RUN cd googleapis-pb && git pull origin master && cd ..
+
+# Build protos
+RUN python -m grpc_tools.protoc -I . --proto_path=./googleapis-pb  --python_out=. --grpc_python_out=. ./api.proto
+
+# Run api server
+CMD python server.py

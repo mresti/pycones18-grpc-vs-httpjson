@@ -1,0 +1,27 @@
+version: '2'
+services:
+  djangoapi:
+    build: ./django
+    command: python3 manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+  flaskapi:
+    build: ./flask
+    ports:
+      - "8001:5000"
+  grpcapi:
+    build: ./grpc
+    ports:
+      - "50051:50051"
+  grpcgwapi:
+    build: ./grpcgw
+    ports:
+      - "8002:9000"
+    links:
+      - "grpcapi:grpcapi"
+  grpcrestapi:
+    build: ./grpcrest
+    ports:
+      - "8003:5000"
+    links:
+      - "grpcapi:grpcapi"

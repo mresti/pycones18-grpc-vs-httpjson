@@ -1,0 +1,47 @@
+FROM golang:1.10.4-stretch
+
+# OS dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install protos
+RUN curl -OL https://github.com/google/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip && \
+    unzip protoc-3.6.1-linux-x86_64.zip -d protoc3 && \
+    mv protoc3/bin/* /usr/local/bin/ && \
+    mv protoc3/include/* /usr/local/include/ && \
+    rm -rf protoc-3.6.1-linux-x86_64.zip && \
+    rm -rf protoc3
+
+# Install grpc dependencies
+RUN go get -u github.com/golang/protobuf/proto
+RUN go get -u google.golang.org/grpc
+RUN go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+RUN go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+RUN go get -u github.com/golang/protobuf/protoc-gen-go
+
+# Clean unnecesary tools
+RUN apt-get remove -y unzip
+
+# Create workdir
+RUN mkdir -p /go/src/github.com/mresti/pycones18-grpc-vs-httpjson/grpcgw
+ADD . /go/src/github.com/mresti/pycones18-grpc-vs-httpjson/grpcgw
+WORKDIR /go/src
+
+# build protos
+RUN protoc \
+  -I./github.com/mresti/pycones18-grpc-vs-httpjson/grpcgw \
+  -I$GOPATH/src \
+  -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+  --go_out=plugins=grpc:. \
+  /go/src/github.com/mresti/pycones18-grpc-vs-httpjson/grpcgw/api/api.proto
+
+# build protos for gateway
+RUN protoc -I./github.com/mresti/pycones18-grpc-vs-httpjson/grpcgw \
+  -I$GOPATH/src \
+  -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+  --grpc-gateway_out=logtostderr=true:. \
+  /go/src/github.com/mresti/pycones18-grpc-vs-httpjson/grpcgw/api/api.proto
+
+# Run proxy server
+CMD go run github.com/mresti/pycones18-grpc-vs-httpjson/grpcgw/server.go
