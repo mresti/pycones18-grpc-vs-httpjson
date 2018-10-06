@@ -1,4 +1,4 @@
-!(diagram)[diagram.png]
+![diagram](diagram.png)
 
 # pycones18-grpc-vs-httpjson
 PyConES2018 - Comparing gRPC+Protobuf vs JSON+HTTP in Python
