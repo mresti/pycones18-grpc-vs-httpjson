@@ -10,15 +10,13 @@ This repository contains 5 equal APIs: gRPC using Protobuf and JSON over HTTP. T
 
 The application consists of the following application services:
 
-| Service      | Port  | Description                                        | Language service |
-|--------------|-------|----------------------------------------------------|------------------|
-| django       | 8000  | Provides a django webapp                           | Python           |
-| flask        | 8001  | Provides a flask webapp                            | Python           |
-| grpc         | 50051 | Provides a grpc webapp                             | Python           |
-| grpc-gateway | 8002  | Provides a grpc proxy                              | Golang           |
-| grpc-rest    | 8003  | Provides a flask webapp where request is called    | Python           |
-|              |       | to grpc webapp using stub of grpc service          |                  |
- - ---------------------------------------------------------------------------------------------- 
+| Service      | Port  | Protocol | Description                                                   | Language service |
+|--------------|-------|----------|---------------------------------------------------------------|------------------|
+| django       | 8000  | http     |Provides a django webapp                                       | Python           |
+| flask        | 8001  | http     |Provides a flask webapp                                        | Python           |
+| grpc         | 50051 | grpc     |Provides a grpc webapp                                         | Python           |
+| grpc-gateway | 8002  | http     |Provides a grpc proxy                                          | Golang           |
+| grpc-rest    | 8003  | http     |Provides a flask webapp which grpc client is called by request | Python           |
 
 ### Requirements
 
